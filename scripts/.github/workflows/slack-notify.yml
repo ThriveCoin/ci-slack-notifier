@@ -1,0 +1,36 @@
+name: Slack Notify on CI Failure
+
+on:
+  workflow_call:
+    inputs:
+      slack_webhook:
+        required: true
+        type: string
+      job_name:
+        required: true
+        type: string
+      repo_name:
+        required: true
+        type: string
+      run_id:
+        required: true
+        type: string
+      message:
+        required: false
+        type: string
+
+jobs:
+  send-failure-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ci-slack-notifier repo
+        uses: actions/checkout@v3
+
+      - name: Send Slack notification for failed job
+        run: |
+          ./scripts/notify.sh \
+            "${{ inputs.slack_webhook }}" \
+            "${{ inputs.job_name }}" \
+            "${{ inputs.repo_name }}" \
+            "${{ inputs.run_id }}" \
+            "${{ inputs.message }}"
