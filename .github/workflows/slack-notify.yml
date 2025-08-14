@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout ci-slack-notifier repo
         uses: actions/checkout@v3
+        with:
+          ref: THC-7395
 
       - name: Send Slack notification for failed job
         run: |
