@@ -2,9 +2,6 @@ name: Slack Notify on CI Failure
 
 on:
   workflow_call:
-    secrets:
-      slack_webhook:
-        required: true
     inputs:
       job_name:
         required: true
@@ -22,6 +19,9 @@ on:
 jobs:
   send-failure-notification:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout ci-slack-notifier repo
         uses: actions/checkout@v3
@@ -29,10 +29,23 @@ jobs:
           repository: ThriveCoin/ci-slack-notifier
           ref: THC-7395
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::551683532621:role/github_actions
+          aws-region: us-east-1
+
+      - name: Read secrets from AWS Secrets Manager
+        uses: abhilash1in/aws-secrets-manager-action@v2.0.0
+        with:
+          secrets: |
+            SLACK_HOOK
+          parse-json: true
+
       - name: Send Slack notification for failed job
         run: |
           ./scripts/notify.sh \
-            "${{ secrets.slack_webhook }}" \
+            "${{ env.SLACK_HOOK_DEPLOYMENT }}" \
             "${{ inputs.job_name }}" \
             "${{ inputs.repo_name }}" \
             "${{ inputs.run_id }}" \
