@@ -12,9 +12,6 @@ on:
       run_id:
         required: true
         type: string
-      message:
-        required: false
-        type: string
 
 jobs:
   send-failure-notification:
@@ -48,5 +45,4 @@ jobs:
             "${{ env.SLACK_HOOK_DEPLOYMENT }}" \
             "${{ inputs.job_name }}" \
             "${{ inputs.repo_name }}" \
-            "${{ inputs.run_id }}" \
-            "${{ inputs.message }}"
+            "${{ inputs.run_id }}"
