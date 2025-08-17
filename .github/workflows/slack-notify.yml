@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ThriveCoin/ci-slack-notifier
-          ref: THC-7395
+          ref: main
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
